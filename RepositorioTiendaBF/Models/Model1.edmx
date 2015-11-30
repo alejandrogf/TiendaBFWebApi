@@ -1,0 +1,374 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="PracticaTiendaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Categoria">
+          <Key>
+            <PropertyRef Name="IdCategoria" />
+          </Key>
+          <Property Name="IdCategoria" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Compra">
+          <Key>
+            <PropertyRef Name="IdCompra" />
+          </Key>
+          <Property Name="IdCompra" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Fecha" Type="date" Nullable="false" />
+          <Property Name="Total" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="idUsusario" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CompraProducto">
+          <Key>
+            <PropertyRef Name="idCompra" />
+            <PropertyRef Name="idProducto" />
+          </Key>
+          <Property Name="idCompra" Type="int" Nullable="false" />
+          <Property Name="idProducto" Type="int" Nullable="false" />
+          <Property Name="Unidades" Type="int" Nullable="false" />
+          <Property Name="SubTotal" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Producto">
+          <Key>
+            <PropertyRef Name="idProducto" />
+          </Key>
+          <Property Name="idProducto" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Precio" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PrecioOferta" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Descripcion" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductoCategoria">
+          <Key>
+            <PropertyRef Name="IdProducto" />
+            <PropertyRef Name="idCategoria" />
+          </Key>
+          <Property Name="IdProducto" Type="int" Nullable="false" />
+          <Property Name="idCategoria" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="idUsuario" />
+          </Key>
+          <Property Name="idUsuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Apellidos" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Edad" Type="int" Nullable="false" />
+          <Property Name="Login" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Pass" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Dni" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Domicilio" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Facturacion" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <Association Name="FK_Compra_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+          <End Role="Compra" Type="Self.Compra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="idUsuario" />
+            </Principal>
+            <Dependent Role="Compra">
+              <PropertyRef Name="idUsusario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompraProducto_Compra">
+          <End Role="Compra" Type="Self.Compra" Multiplicity="1" />
+          <End Role="CompraProducto" Type="Self.CompraProducto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Compra">
+              <PropertyRef Name="IdCompra" />
+            </Principal>
+            <Dependent Role="CompraProducto">
+              <PropertyRef Name="idCompra" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompraProducto_Producto">
+          <End Role="Producto" Type="Self.Producto" Multiplicity="1" />
+          <End Role="CompraProducto" Type="Self.CompraProducto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Producto">
+              <PropertyRef Name="idProducto" />
+            </Principal>
+            <Dependent Role="CompraProducto">
+              <PropertyRef Name="idProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductoCategoria_Categoria">
+          <End Role="Categoria" Type="Self.Categoria" Multiplicity="1" />
+          <End Role="ProductoCategoria" Type="Self.ProductoCategoria" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categoria">
+              <PropertyRef Name="IdCategoria" />
+            </Principal>
+            <Dependent Role="ProductoCategoria">
+              <PropertyRef Name="idCategoria" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductoCategoria_Producto">
+          <End Role="Producto" Type="Self.Producto" Multiplicity="1" />
+          <End Role="ProductoCategoria" Type="Self.ProductoCategoria" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Producto">
+              <PropertyRef Name="idProducto" />
+            </Principal>
+            <Dependent Role="ProductoCategoria">
+              <PropertyRef Name="IdProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PracticaTiendaModelStoreContainer">
+          <EntitySet Name="Categoria" EntityType="Self.Categoria" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Compra" EntityType="Self.Compra" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CompraProducto" EntityType="Self.CompraProducto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Producto" EntityType="Self.Producto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductoCategoria" EntityType="Self.ProductoCategoria" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Compra_Usuario" Association="Self.FK_Compra_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="Compra" EntitySet="Compra" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompraProducto_Compra" Association="Self.FK_CompraProducto_Compra">
+            <End Role="Compra" EntitySet="Compra" />
+            <End Role="CompraProducto" EntitySet="CompraProducto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompraProducto_Producto" Association="Self.FK_CompraProducto_Producto">
+            <End Role="Producto" EntitySet="Producto" />
+            <End Role="CompraProducto" EntitySet="CompraProducto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductoCategoria_Categoria" Association="Self.FK_ProductoCategoria_Categoria">
+            <End Role="Categoria" EntitySet="Categoria" />
+            <End Role="ProductoCategoria" EntitySet="ProductoCategoria" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductoCategoria_Producto" Association="Self.FK_ProductoCategoria_Producto">
+            <End Role="Producto" EntitySet="Producto" />
+            <End Role="ProductoCategoria" EntitySet="ProductoCategoria" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PracticaTiendaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Categoria">
+          <Key>
+            <PropertyRef Name="IdCategoria" />
+          </Key>
+          <Property Name="IdCategoria" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Producto" Relationship="Self.ProductoCategoria" FromRole="Categoria" ToRole="Producto" />
+        </EntityType>
+        <EntityType Name="Compra">
+          <Key>
+            <PropertyRef Name="IdCompra" />
+          </Key>
+          <Property Name="IdCompra" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Total" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="idUsusario" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Usuario" Relationship="Self.FK_Compra_Usuario" FromRole="Compra" ToRole="Usuario" />
+          <NavigationProperty Name="CompraProducto" Relationship="Self.FK_CompraProducto_Compra" FromRole="Compra" ToRole="CompraProducto" />
+        </EntityType>
+        <EntityType Name="CompraProducto">
+          <Key>
+            <PropertyRef Name="idCompra" />
+            <PropertyRef Name="idProducto" />
+          </Key>
+          <Property Name="idCompra" Type="Int32" Nullable="false" />
+          <Property Name="idProducto" Type="Int32" Nullable="false" />
+          <Property Name="Unidades" Type="Int32" Nullable="false" />
+          <Property Name="SubTotal" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Compra" Relationship="Self.FK_CompraProducto_Compra" FromRole="CompraProducto" ToRole="Compra" />
+          <NavigationProperty Name="Producto" Relationship="Self.FK_CompraProducto_Producto" FromRole="CompraProducto" ToRole="Producto" />
+        </EntityType>
+        <EntityType Name="Producto">
+          <Key>
+            <PropertyRef Name="idProducto" />
+          </Key>
+          <Property Name="idProducto" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Precio" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PrecioOferta" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Descripcion" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CompraProducto" Relationship="Self.FK_CompraProducto_Producto" FromRole="Producto" ToRole="CompraProducto" />
+          <NavigationProperty Name="Categoria" Relationship="Self.ProductoCategoria" FromRole="Producto" ToRole="Categoria" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="idUsuario" />
+          </Key>
+          <Property Name="idUsuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Apellidos" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Edad" Type="Int32" Nullable="false" />
+          <Property Name="Login" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Pass" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Dni" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Domicilio" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Facturacion" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Compra" Relationship="Self.FK_Compra_Usuario" FromRole="Usuario" ToRole="Compra" />
+        </EntityType>
+        <Association Name="FK_Compra_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+          <End Role="Compra" Type="Self.Compra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="idUsuario" />
+            </Principal>
+            <Dependent Role="Compra">
+              <PropertyRef Name="idUsusario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompraProducto_Compra">
+          <End Role="Compra" Type="Self.Compra" Multiplicity="1" />
+          <End Role="CompraProducto" Type="Self.CompraProducto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Compra">
+              <PropertyRef Name="IdCompra" />
+            </Principal>
+            <Dependent Role="CompraProducto">
+              <PropertyRef Name="idCompra" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompraProducto_Producto">
+          <End Role="Producto" Type="Self.Producto" Multiplicity="1" />
+          <End Role="CompraProducto" Type="Self.CompraProducto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Producto">
+              <PropertyRef Name="idProducto" />
+            </Principal>
+            <Dependent Role="CompraProducto">
+              <PropertyRef Name="idProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProductoCategoria">
+          <End Role="Categoria" Type="Self.Categoria" Multiplicity="*" />
+          <End Role="Producto" Type="Self.Producto" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="PracticaTiendaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categoria" EntityType="Self.Categoria" />
+          <EntitySet Name="Compra" EntityType="Self.Compra" />
+          <EntitySet Name="CompraProducto" EntityType="Self.CompraProducto" />
+          <EntitySet Name="Producto" EntityType="Self.Producto" />
+          <EntitySet Name="Usuario" EntityType="Self.Usuario" />
+          <AssociationSet Name="FK_Compra_Usuario" Association="Self.FK_Compra_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="Compra" EntitySet="Compra" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompraProducto_Compra" Association="Self.FK_CompraProducto_Compra">
+            <End Role="Compra" EntitySet="Compra" />
+            <End Role="CompraProducto" EntitySet="CompraProducto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompraProducto_Producto" Association="Self.FK_CompraProducto_Producto">
+            <End Role="Producto" EntitySet="Producto" />
+            <End Role="CompraProducto" EntitySet="CompraProducto" />
+          </AssociationSet>
+          <AssociationSet Name="ProductoCategoria" Association="Self.ProductoCategoria">
+            <End Role="Categoria" EntitySet="Categoria" />
+            <End Role="Producto" EntitySet="Producto" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PracticaTiendaModelStoreContainer" CdmEntityContainer="PracticaTiendaEntities">
+          <EntitySetMapping Name="Categoria">
+            <EntityTypeMapping TypeName="PracticaTiendaModel.Categoria">
+              <MappingFragment StoreEntitySet="Categoria">
+                <ScalarProperty Name="IdCategoria" ColumnName="IdCategoria" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Compra">
+            <EntityTypeMapping TypeName="PracticaTiendaModel.Compra">
+              <MappingFragment StoreEntitySet="Compra">
+                <ScalarProperty Name="IdCompra" ColumnName="IdCompra" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="idUsusario" ColumnName="idUsusario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CompraProducto">
+            <EntityTypeMapping TypeName="PracticaTiendaModel.CompraProducto">
+              <MappingFragment StoreEntitySet="CompraProducto">
+                <ScalarProperty Name="idCompra" ColumnName="idCompra" />
+                <ScalarProperty Name="idProducto" ColumnName="idProducto" />
+                <ScalarProperty Name="Unidades" ColumnName="Unidades" />
+                <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Producto">
+            <EntityTypeMapping TypeName="PracticaTiendaModel.Producto">
+              <MappingFragment StoreEntitySet="Producto">
+                <ScalarProperty Name="idProducto" ColumnName="idProducto" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="PrecioOferta" ColumnName="PrecioOferta" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuario">
+            <EntityTypeMapping TypeName="PracticaTiendaModel.Usuario">
+              <MappingFragment StoreEntitySet="Usuario">
+                <ScalarProperty Name="idUsuario" ColumnName="idUsuario" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellidos" ColumnName="Apellidos" />
+                <ScalarProperty Name="Edad" ColumnName="Edad" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="Pass" ColumnName="Pass" />
+                <ScalarProperty Name="Dni" ColumnName="Dni" />
+                <ScalarProperty Name="Domicilio" ColumnName="Domicilio" />
+                <ScalarProperty Name="Facturacion" ColumnName="Facturacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ProductoCategoria" TypeName="PracticaTiendaModel.ProductoCategoria" StoreEntitySet="ProductoCategoria">
+            <EndProperty Name="Categoria">
+              <ScalarProperty Name="IdCategoria" ColumnName="idCategoria" />
+            </EndProperty>
+            <EndProperty Name="Producto">
+              <ScalarProperty Name="idProducto" ColumnName="IdProducto" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
